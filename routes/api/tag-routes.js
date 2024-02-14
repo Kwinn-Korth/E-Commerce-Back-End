@@ -42,13 +42,21 @@ router.post('/', (req, res) => {
 
 
 router.put('/:id', (req, res) => {
-  // TODO: update a tag's name by its `id` value
   Tag.update(req.body, {
     where: {
       id: req.params.id
     }
   })
+  .then(result => {
+    if (result[0] > 0) { // Check if any row was updated
+      res.json({ message: 'Tag updated successfully.' });
+    } else {
+      res.status(404).json({ message: 'Tag not found.' });
+    }
+  })
+  .catch(err => res.status(500).json(err)); // Handle any errors
 });
+
 
 router.delete('/:id', (req, res) => {
   // TODO: delete on tag by its `id` value
