@@ -3,7 +3,7 @@
 ## Description
 
 This is a very simple backend for a fake store that I made so that I could learn more about how to make changes to a database and pull information from a database.
-I learned that you need to set up your endpoints correctly becasue the smallets error will make it so that enpoint doesn't work.
+I learned that you need to set up your endpoints correctly because the smallest error will make it so that endpoint doesn't work.
 
 ## Installation
 
@@ -25,7 +25,7 @@ the first thing that you need to do is to run "npm install" to get the necessary
 
 MIT License
 
-Copyright (c) [year] [fullname]
+Copyright (c) [2024] [E-Commerce-Back-End]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
