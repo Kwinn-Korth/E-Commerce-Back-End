@@ -45,26 +45,49 @@ router.get('/:id', (req, res) => {
 // create new product
 router.post('/', async (req, res) => {
   try {
-    // Destructure req.body to ensure only the expected fields are passed to Product.create
-    const { product_name, price, stock, tagIds } = req.body;
-    const product = await Product.create({ product_name, price, stock });
+    const { product_name, price, stock, category_id, tagIds } = req.body;
+    // Create the product
+    const product = await Product.create({ product_name, price, stock, category_id });
 
-    // Check if there's product tags to associate
+    // Check if there are tag IDs provided
     if (tagIds && tagIds.length) {
-      const productTagIdArr = tagIds.map(tag_id => {
-        return { product_id: product.id, tag_id };
+      // Fetch existing tags to validate provided IDs
+      const existingTags = await Tag.findAll({
+        where: {
+          id: tagIds
+        }
       });
-      const productTagIds = await ProductTag.bulkCreate(productTagIdArr);
-      return res.status(200).json({ product, productTagIds });
+
+      // Filter to get an array of existing tag IDs
+      const existingTagIds = existingTags.map(tag => tag.id);
+
+      // Compare provided tagIds with existingTagIds to ensure all exist
+      const allTagsExist = tagIds.every(tagId => existingTagIds.includes(tagId));
+
+      if (!allTagsExist) {
+        // Not all provided tag IDs exist in the database
+        return res.status(400).json({ message: 'One or more provided tag IDs do not exist.' });
+      }
+
+      // All provided tag IDs exist; proceed to create product_tag associations
+      const productTagIdArr = tagIds.map(tag_id => {
+        return {
+          product_id: product.id,
+          tag_id,
+        };
+      });
+
+      await ProductTag.bulkCreate(productTagIdArr);
     }
 
-    // If no product tags, just respond with the product
+    // Respond with the product (and associated tags if applicable)
     res.status(200).json(product);
   } catch (err) {
     console.log(err);
     res.status(400).json(err);
   }
 });
+
 
 // update product
 router.put('/:id', (req, res) => {
