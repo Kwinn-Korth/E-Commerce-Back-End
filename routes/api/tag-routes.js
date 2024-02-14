@@ -33,13 +33,13 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  // TODO: create a new tag
   Tag.create({
     tag_name: req.body.tag_name
-  }) .then(result => {
-    res.json(result);
   })
+  .then(result => res.json(result))
+  .catch(err => res.status(500).json(err)); // Handle any errors
 });
+
 
 router.put('/:id', (req, res) => {
   // TODO: update a tag's name by its `id` value
